@@ -18,8 +18,8 @@ class Spouse extends Migration
             $table->unsignedBigInteger('wife');
             $table->timestamps();
 
-            $table->foreign('husband')->references('id')->on('people');
-            $table->foreign('wife')->references('id')->on('people');
+            $table->foreign('husband')->references('id')->on('people')->onDelete('cascade');
+            $table->foreign('wife')->references('id')->on('people')->onDelete('cascade');
         });
     }
 

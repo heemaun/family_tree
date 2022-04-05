@@ -21,8 +21,8 @@ class CreatePeopleTable extends Migration
             $table->enum('gender',['Male','Female']);
             $table->timestamps();
 
-            $table->foreign('father_id')->references('id')->on('people');
-            $table->foreign('mother_id')->references('id')->on('people');
+            $table->foreign('father_id')->references('id')->on('people')->onDelete('cascade');
+            $table->foreign('mother_id')->references('id')->on('people')->onDelete('cascade');
         });
     }
 

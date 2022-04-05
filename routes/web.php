@@ -14,8 +14,8 @@ use App\Http\Controllers\PerosnController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/',[PerosnController::class,'index']);
 
 Route::resource('/person',PerosnController::class);
+Route::get('/ajax-spouse',[PerosnController::class,'getAjaxSpouse'])->name('ajax.spouse');
+Route::get('/tree-view/{person}',[PerosnController::class,'treeView'])->name('tree.view');

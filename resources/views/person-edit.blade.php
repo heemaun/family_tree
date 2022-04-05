@@ -2,11 +2,12 @@
 @section('content')
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <form action="{{route('person.store')}}" method="POST">
+        <form action="{{route('person.update',$person->id)}}" method="POST">
             <legend>Add new person</legend>
             @csrf
+            @method("PUT")
             <div class="row form-floating">
-                <input type="text" name="name" id="name" placeholder="enter person name here" class="form-control">
+                <input type="text" name="name" id="name" placeholder="enter person name here" value="{{$person->name}}" class="form-control">
                 <label for="name" class="form-label">Name</label>
                 @error('name')
                 <span>{{$message}}</span>
@@ -15,10 +16,10 @@
             </div>
             <div class="row form-floating">
                 <select name="gender" id="gender" class="form-select" onchange="spouseCheck()">
-                    <option value="">None</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
+                    <option value="" {{($person->gender==null)?'selected':''}}>None</option>
+                    <option value="Male" {{(strcmp($person->gender,'Male')==0)?'selected':''}}>Male</option>
+                    <option value="Female" {{(strcmp($person->gender,'Female')==0)?'selected':''}}>Female</option>
+                    <option value="Other" {{(strcmp($person->gender,'Other')==0)?'selected':''}}>Other</option>
                 </select>
                 <label for="gender" class="form-label">Select a gender</label>
                 @error('gender')
@@ -30,7 +31,7 @@
                 <select name="father_id" id="father_id" class="form-select">
                     <option value="">None</option>
                     @foreach ($males as $male)
-                    <option value="{{$male->id}}">{{$male->name}}</option>
+                    <option value="{{$male->id}}" {{($person->father_id==$male->id)?'selected':''}}>{{$male->name}}</option>
                     @endforeach
                 </select>
                 <label for="father_id" class="form-label">Select father</label>
@@ -43,7 +44,7 @@
                 <select name="mother_id" id="mother_id" class="form-select">
                     <option value="">None</option>
                     @foreach ($females as $female)
-                    <option value="{{$female->id}}">{{$female->name}}</option>
+                    <option value="{{$female->id}}" {{($person->mother_id==$female->id)?'selected':''}}>{{$female->name}}</option>
                     @endforeach
                 </select>
                 <label for="mother_id" class="form-label">Select mother</label>
@@ -55,6 +56,15 @@
             <div class="row form-floating" id="male_div">
                 <select name="spouse" id="spouse" class="form-select">
                     <option value="">None</option>
+                    @if (strcmp($person->gender,'Male')==0)
+                        @foreach ($females as $female)
+                        <option value="{{$female->id}}" {{$person->wife->contains($female->id)?'selected':''}}>{{$female->name}}</option>
+                        @endforeach
+                    @else
+                        @foreach ($males as $male)
+                        <option value="{{$male->id}}" {{$person->husband->contains($male->id)?'selected':''}}>{{$male->name}}</option>
+                        @endforeach
+                    @endif
                 </select>
                 <label for="spouse" class="form-label">Select spouse</label>
                 @error('spouse')
@@ -62,7 +72,8 @@
                 @enderror
                 <br>
             </div>
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="submit" class="btn btn-success">Update</button>
+            <a href="{{route('person.index')}}" class="btn btn-primary">Back</a>
         </form>
     </div>
 </div>
